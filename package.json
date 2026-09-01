@@ -1,0 +1,10 @@
+{
+  "name": "nodejs-project-31082026",
+  "version": "1.0.0",
+  "description": "My Node.js application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "dependencies": {}
+}
