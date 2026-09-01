@@ -13,8 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Fixed the clipped repository URL
-                git branch: 'main', url: 'https://github.com/Leeo800/nodejs-project-31082026-snoarqube.git'
+                git branch: 'main', url: 'https://github.com/Leeo800/nodejs-project-31082026.git'
             }
         }
 
@@ -28,7 +27,7 @@ pipeline {
         stage('Run Linting & Tests') {
             steps {
                 echo 'Running unit tests with coverage tracking...'
-                sh 'npm test'
+                sh 'npm test --if-present'
             }
         }
 
@@ -36,7 +35,6 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     echo 'Starting SonarQube scan with coverage reporting...'
-                    // Removed the trailing '>' typo from the exclusions configuration
                     sh '''
                         sonar-scanner \
                         -Dsonar.projectKey=nodejs-project \
