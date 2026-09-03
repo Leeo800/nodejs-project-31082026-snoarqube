@@ -4,7 +4,11 @@
   "description": "My Node.js application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "jest --coverage"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
+
