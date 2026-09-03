@@ -13,7 +13,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Fixed truncated Git target tracking configuration URL
                 git branch: 'main', url: 'https://github.com/Leeo800/nodejs-project-31082026-snoarqube.git'
             }
         }
@@ -28,7 +27,6 @@ pipeline {
         stage('Run Linting & Tests') {
             steps {
                 echo 'Running unit tests with coverage tracking...'
-                // Safe check allows execution to pass even if package.json tests are empty
                 sh 'npm test --if-present'
             }
         }
@@ -36,8 +34,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    // Overrides the path context to target your system JRE/JDK 17 execution binaries
-                    // (Change path string below if your JDK17 installation directory lives elsewhere)
                     withEnv(["JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64"]) {
                         echo 'Starting SonarQube scan with coverage reporting...'
                         sh '''
@@ -52,6 +48,27 @@ pipeline {
                     }
                 }
             }
+        }
+
+        // NEW: Enforces Quality Gate metrics before marking the build as a success
+        stage("Quality Gate Check") {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to SonarQube Quality Gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // NEW: Keeps your Jenkins agent disk space clean after execution completes
+    post {
+        always {
+            cleanWs()
         }
     }
 }
